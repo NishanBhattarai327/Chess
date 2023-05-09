@@ -17,27 +17,18 @@ class Board {
         console.log("Game created");
     }
 
-    availableSquare(peice) {
+    availableSquares() {
         let squares = [];
         
         for(let row = 0; row < this.board.length; row++) {
             for (let col = 0; col < this.board[row].length; col++) {
                 if (this.board[row][col] == ' ' || this.board[row][col] == '.') {
+                    this.board[row][col] = 'a';
                     squares.push([row, col]);
                 }
             }
         }
         return squares;
-    }
-
-    movePiece(piece, row, col) {
-        if (this._checkIfAvailable(piece, row, col)) {
-            let p = piece;
-            this.removePiece(piece);
-            this.addPiece(piece, row, col);
-            return true;
-        }
-        return false;
     }
 
     getPiecePosition(piece) {
@@ -55,6 +46,27 @@ class Board {
         return this.board[row][col];
     }
 
+    getSelectedPiecePosition() {
+        let piece;
+        for (let i = 0; i < this.board.length; i++) {
+            for (let j = 0; j < this.board[0].length; j++) {
+                piece = this.board[i][j];
+                if (piece[0] == 'c') {
+                    return [i, j];
+                }
+            }
+        }
+
+        return [];
+    }
+    getSelectedPiece() {
+        let position = this.getSelectedPiecePosition();
+        if (position.length > 0) {
+            return this.board[position[0]][position[1]];
+        }
+        return '';
+    }
+
     getBoard() {
         return this.board;
     }
@@ -62,6 +74,7 @@ class Board {
 
     removePiece(piece) {
         console.log(piece);
+
         let position = this.getPiecePosition(piece);
         if (position.length > 0){
             this.board[position[0]][position[1]] = ' ';
@@ -71,25 +84,42 @@ class Board {
     }
 
     addPiece(piece, row, col) {
-        if (piece == undefined) 
-            this.board[row][col] = ' ';
-        else 
+        if (row < 8 && row >= 0 && col < 8 && col >= 0) {
+            if (piece == undefined) 
+                return false;
+            
             this.board[row][col] = piece;
-
-        console.log(piece, row, col);
-    }
-
-    //private method
-    _checkIfAvailable(piece, row, col){
-        let availableSquares = this.availableSquare(piece);
-        for (let i = 0; i < availableSquares.length; i++) {
-            if (availableSquares[i][0] == row && availableSquares[i][1] == col)
-                return true;
+            return true;
         }
         return false;
     }
-}
 
+    movePiece(piece, row, col) {
+        if (row >= 0 && row < 8 && col >= 0 && col < 8) {
+            this.removePiece(piece);
+            this.addPiece(piece, row, col);
+            return true;
+        }
+        return false;
+    }
+
+    selectPiece(piece) {
+        let position = this.getPiecePosition(piece);
+        this.board[position[0]][position[1]] = 'c'+piece;
+    }
+
+    unselectPieces() {
+        let piece;
+        for (let i = 0; i < this.board.length; i++) {
+            for (let j = 0; j < this.board[0].length; j++) {
+                piece = this.board[i][j];
+                if (piece[0] == 'c') {
+                    this.board[i][j] = piece[1] + piece[2];
+                }
+            }
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -100,7 +130,7 @@ class Board {
 class UI {
     constructor() {
         this.chessboard = document.querySelector('.board');
-        this.pieces = {
+        this.piecesName = {
             'r': 'white_rook',
             'n': 'white_knight',
             'b': 'white_bishop',
@@ -136,11 +166,27 @@ class UI {
                     square.classList.add('black');
                 }
 
-                const pieceType = this.pieces[board.getBoard()[row][col].charAt(0)];
+                const pieceSymbol = board.getBoard()[row][col].charAt(0);
+                let pieceImgName;
                 
-                if (pieceType) {
-                    this._insertPieceOntoSquare(row, col, pieceType, square, board);
+                if (pieceSymbol == 'a') {
+                    square.classList.add('available');
+                    square.addEventListener('click', (event) => {
+                        this._clickHandler(event, board, false)
+                    });
                 }
+                else if (pieceSymbol == 'c') {
+                    square.classList.add('clicked');
+                    pieceImgName = this.piecesName[board.getBoard()[row][col].charAt(1)];
+                }
+                else {
+                    pieceImgName = this.piecesName[pieceSymbol];
+                }
+                
+                if (pieceImgName) {
+                    this._insertPieceOntoSquare(row, col, pieceImgName, square, board);
+                }
+
                 this.chessboard.appendChild(square);
             }
         }
@@ -154,33 +200,62 @@ class UI {
         }
     }
 
-    _insertPieceOntoSquare(row, col, pieceType, square, board) {
+    _insertPieceOntoSquare(row, col, pieceImgName, square, board) {
         const piece = document.createElement('img');
         piece.dataset.piece = board.getBoard()[row][col];
         piece.dataset.row = row;
         piece.dataset.col = col;
       
         piece.classList.add('piece', board.getBoard()[row][col]);
-        piece.setAttribute('src', `imgs/${pieceType}.png`);
+        piece.setAttribute('src', `imgs/${pieceImgName}.png`);
         piece.setAttribute('alt', 'pieces');
         
-        piece.addEventListener('click', (event) => {this._clickHandler(event, board)}, true);
+        piece.addEventListener('click', (event) => {
+            this._clickHandler(event, board, true)
+        });
         square.appendChild(piece);
     }
 
-    _clickHandler(event, board) {
+    _clickHandler(event, board, firstTime) {
         let pieceUi = event.target;
-        pieceUi.classList.add('clicked');
-      
+        
         let row = parseInt(pieceUi.dataset.row);
         let col = parseInt(pieceUi.dataset.col);
-
-        console.log("ui: ", row, col);
-
-        board.addPiece(pieceUi.dataset.piece, row+2, col);
-        if (!board.removePiece(pieceUi.dataset.piece)) console.log("piece removing failed");
         
-        this.render(board);
+        
+        // first time means show the available square
+        if (firstTime) {
+            board.unselectPieces();
+            this.render(board);
+            
+            
+            console.log("ui: ", row, col);
+            
+            let piece = pieceUi.dataset.piece;
+            
+            board.availableSquares(piece);
+            board.selectPiece(piece);
+
+            console.log("board: ", board.getBoard());
+            console.log(board.getSelectedPiece());
+
+            this.render(board);
+
+        }
+        // if not first time then move the piece to the clicked position
+        else {
+            let selectedPiece = board.getSelectedPiece();
+
+            if (board.movePiece(selectedPiece, row, col)) {
+               board.unselectPieces();
+            }
+            else {
+                console.log("Piece moving unsuccessful");
+            }
+
+            this.render(board);
+            console.log(board.getBoard());
+        }
     }
 }
 /////////////////////////////////////////////////////////////////
