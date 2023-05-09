@@ -15,10 +15,15 @@
   }
 
   .piece {
-	width: 40px;
-	height: 40px;
+	width: 100%;
+	height: 100%;
 	background-size: contain;
 	background-repeat: no-repeat;
+  }
+
+  .piece:hover {
+	background-color: rgba(123, 125, 123, 0.247);
+	cursor: pointer;
   }
   
   .square.white {
@@ -27,5 +32,9 @@
   
   .square.black {
 	background-color: #000;
+  }
+
+  .square.available {
+	background-color: rgba(131, 114, 93, 0.678);
   }
   
