@@ -17,18 +17,24 @@ class Board {
         console.log("Game created");
     }
 
-    availableSquares() {
-        let squares = [];
-        
+    showAvailableSquares() {
         for(let row = 0; row < this.board.length; row++) {
             for (let col = 0; col < this.board[row].length; col++) {
                 if (this.board[row][col] == ' ' || this.board[row][col] == '.') {
-                    this.board[row][col] = 'a';
-                    squares.push([row, col]);
+                    this.board[row][col] = 'a' + this.board[row][col];
                 }
             }
         }
-        return squares;
+    }
+    
+    hideAvailableSquares() {
+        for(let row = 0; row < this.board.length; row++) {
+            for (let col = 0; col < this.board[row].length; col++) {
+                if (this.board[row][col][0] == 'a') {
+                    this.board[row][col] = this.board[row][col].replace('a', '');
+                }
+            }
+        }
     }
 
     getPiecePosition(piece) {
@@ -233,7 +239,7 @@ class UI {
             
             let piece = pieceUi.dataset.piece;
             
-            board.availableSquares(piece);
+            board.showAvailableSquares(piece);
             board.selectPiece(piece);
 
             console.log("board: ", board.getBoard());
@@ -248,6 +254,7 @@ class UI {
 
             if (board.movePiece(selectedPiece, row, col)) {
                board.unselectPieces();
+               board.hideAvailableSquares();
             }
             else {
                 console.log("Piece moving unsuccessful");
