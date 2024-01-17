@@ -4,53 +4,63 @@
 }
 
 .board {
-	width: 420px;
-	height: 420px;
+	width: 400px;
+	height: 400px;
 	display: flex;
 	flex-wrap: wrap;
 
 	box-sizing: border-box;
-  }
-  
-  .square {
+}
+
+.square {
 	width: 50px;
 	height: 50px;
-	border: 1px solid #000;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-  }
+}
 
-  .piece {
+.piece {
 	width: 100%;
 	height: 100%;
 	background-size: contain;
 	background-repeat: no-repeat;
-  }
+}
 
-  .piece:hover {
+.piece:hover {
 	cursor: pointer;
 	opacity: 0.7;
-  }
-  
-  .square.white {
-	background-image: url('../imgs/square_gray_light.png');
-  }
-  
-  .square.black {
-	background-image: url('../imgs/square_brown_light.png');
-  }
+}
 
-  .square.available {
+.square.white {
+	background-image: url('../imgs/square_gray_light.png');
+}
+
+.square.black {
+	background-image: url('../imgs/square_brown_dark.png');
+}
+
+.square.available {
 	opacity: 0.85;
-  }
-  .available:hover {
+}
+
+.square > img {
+	height: 70%;
+	width: 70%;
+	object-fit:contain;
+}
+
+.square > img:hover {
+	cursor: pointer;
+	opacity: 0.8;
+}
+
+.available:hover {
 	opacity: 0.95;
 	cursor: pointer;
-  }
+}
 
-  .clicked {
+.clicked {
 	box-sizing: border-box;
 	border: 4px solid rgb(27, 18, 25);
-  }
-  
+}
