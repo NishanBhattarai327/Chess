@@ -1,11 +1,8 @@
-// function to add the chess pieces image to the board
-function addPieceImages()
-{
-    let square = document.getElementsByClassName("square");
+let clicked_piece = {};
 
-    square.foreach(element => {
-        if (element.id == "p") {
-            
-        }
-    });
+function clickHandler(img) {
+    clicked_piece.name = img.alt;
+    clicked_piece.row = img.parentElement.dataset.row;
+    clicked_piece.col = img.parentElement.dataset.col;
+    console.log(clicked_piece);
 }
