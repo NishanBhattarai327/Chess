@@ -42,6 +42,10 @@ function showAvailableSquare(clicked_piece) {
         availableSquare = [];
         findAvailableSquaresForPawn(clicked_piece);
     }
+
+    availableSquare.forEach((div) => {
+        div.classList.add("available");
+    });
 }
 
 function findAvailableSquaresForRook(clicked_piece) {
@@ -109,5 +113,7 @@ function findAvailableSquaresForPawn(clicked_piece) {
 }
 
 function hideAvailableSquare() {
-
+    availableSquare.forEach(div => {
+        div.classList.remove("available");
+    });
 }
