@@ -90,11 +90,11 @@ function findAvailableSquaresForPawn(clicked_piece) {
         let downDiv = document.querySelector(`[data-row='${clicked_piece.row+1}'][data-col='${clicked_piece.col}']`);
         if (!downDiv.hasChildNodes()) {
             availableSquare.push(downDiv);
-        }
-        if (clicked_piece.row == 1) {   // if its pawn first move
-            let down2Div = document.querySelector(`[data-row='${clicked_piece.row+2}'][data-col='${clicked_piece.col}']`);
-            if (!down2Div.hasChildNodes()) {
-                availableSquare.push(down2Div);
+            if (clicked_piece.row == 1) {   // if its pawn first move
+                let down2Div = document.querySelector(`[data-row='${clicked_piece.row+2}'][data-col='${clicked_piece.col}']`);
+                if (!down2Div.hasChildNodes()) {
+                    availableSquare.push(down2Div);
+                }
             }
         }
     }
@@ -102,11 +102,11 @@ function findAvailableSquaresForPawn(clicked_piece) {
         let upDiv = document.querySelector(`[data-row='${clicked_piece.row-1}'][data-col='${clicked_piece.col}']`);
         if (!upDiv.hasChildNodes()) {
             availableSquare.push(upDiv);
-        }
-        if (clicked_piece.row == 6) {   // if its pawn first move
-            let up2Div = document.querySelector(`[data-row='${clicked_piece.row-2}'][data-col='${clicked_piece.col}']`);
-            if (!up2Div.hasChildNodes()) {
-                availableSquare.push(up2Div);
+            if (clicked_piece.row == 6) {   // if its pawn first move
+                let up2Div = document.querySelector(`[data-row='${clicked_piece.row-2}'][data-col='${clicked_piece.col}']`);
+                if (!up2Div.hasChildNodes()) {
+                    availableSquare.push(up2Div);
+                }
             }
         }
     }
