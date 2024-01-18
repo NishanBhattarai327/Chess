@@ -45,6 +45,7 @@ function showAvailableSquare(clicked_piece) {
 
     availableSquare.forEach((div) => {
         div.classList.add("available");
+        div.setAttribute("onclick","moveToMe(this, clicked_piece)");
     });
 }
 
@@ -112,8 +113,15 @@ function findAvailableSquaresForPawn(clicked_piece) {
     console.log(availableSquare);
 }
 
+function moveToMe(targetDiv, clicked_piece) {
+    targetDiv.appendChild(clicked_piece.div.firstChild);
+    unselectPiece(clicked_piece.div);
+    hideAvailableSquare();
+}
+
 function hideAvailableSquare() {
     availableSquare.forEach(div => {
         div.classList.remove("available");
+        div.removeAttribute("onclick");
     });
 }
