@@ -46,27 +46,27 @@ function findAvailableSquaresForRook(clicked_piece) {
 
     console.log(rowDiv);
     console.log(colDiv);
-    console.log(clicked_piece.row, "  , ", clicked_piece.col);
+    console.log(clicked_piece.row, clicked_piece.col);
 
-    for (let i = clicked_piece.row-1; i > 0; i--) {
+    for (let i = clicked_piece.col-1; i >= 0; i--) {
         console.log("left: ", i);
         if (rowDiv[i].hasChildNodes())
             break;
         availableSquare.push(rowDiv[i]);
     }
-    for (let i = clicked_piece.row+1; i < 7; i++) {
+    for (let i = clicked_piece.col+1; i <= 7; i++) {
         console.log("right: ", i);
         if (rowDiv[i].hasChildNodes())
             break;
         availableSquare.push(rowDiv[i]);
     }
-    for (let j = clicked_piece.col-1; j > 0; j--) {
+    for (let j = clicked_piece.row-1; j >= 0; j--) {
         console.log("up: ", j, colDiv[j]);
         if (colDiv[j].hasChildNodes())
             break;
         availableSquare.push(colDiv[j]);
     }
-    for (let j = clicked_piece.col+1; j < 7; j++) {
+    for (let j = clicked_piece.row+1; j <= 7; j++) {
         console.log("down: ", j, colDiv[j]);
         if (colDiv[j].hasChildNodes())
             break;
