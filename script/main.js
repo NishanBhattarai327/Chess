@@ -46,6 +46,11 @@ function showAvailableSquare(clicked_piece) {
         availableSquare = [];
         findAvailableSquaresForBishop(clicked_piece);
     }
+    if (clicked_piece.name.includes("queen")) {
+        availableSquare = [];
+        findAvailableSquaresForBishop(clicked_piece);
+        findAvailableSquaresForRook(clicked_piece);
+    }
 
     availableSquare.forEach((div) => {
         div.classList.add("available");
