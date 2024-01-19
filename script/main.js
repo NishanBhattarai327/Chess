@@ -51,6 +51,10 @@ function showAvailableSquare(clicked_piece) {
         findAvailableSquaresForBishop(clicked_piece);
         findAvailableSquaresForRook(clicked_piece);
     }
+    if (clicked_piece.name.includes("knight")) {
+        availableSquare = [];
+        findAvailableSquaresForKnight(clicked_piece);
+    }
 
     availableSquare.forEach((div) => {
         div.classList.add("available");
@@ -172,6 +176,88 @@ function findAvailableSquaresForBishop(clicked_piece) {
             }
         }
     }
+    console.log(availableSquare);
+}
+
+function findAvailableSquaresForKnight(clicked_piece) {
+    let div;
+    // up
+    let upRow = clicked_piece.row - 2;
+    if (upRow >= 0) {
+        let lCol = clicked_piece.col-1;
+        if (lCol >= 0) {
+            div = document.querySelector(`[data-row='${upRow}'][data-col='${lCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+        let rCol = clicked_piece.col+1;
+        if (rCol <= 7) {
+            div = document.querySelector(`[data-row='${upRow}'][data-col='${rCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+    }
+
+    // down
+    let downRow = clicked_piece.row + 2;
+    if (downRow <= 7) {
+        let lCol = clicked_piece.col-1;
+        if (lCol >= 0) {
+            div = document.querySelector(`[data-row='${downRow}'][data-col='${lCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+        let rCol = clicked_piece.col+1;
+        if (rCol <= 7) {
+            div = document.querySelector(`[data-row='${downRow}'][data-col='${rCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+    }
+
+    // left
+    let leftCol = clicked_piece.col - 2;
+    if (leftCol >= 0) {
+        let uRow = clicked_piece.row-1;
+        if (uRow >= 0) {
+            div = document.querySelector(`[data-row='${uRow}'][data-col='${leftCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+        let dRow = clicked_piece.row+1;
+        if (dRow <= 7) {
+            div = document.querySelector(`[data-row='${dRow}'][data-col='${leftCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+    }
+
+
+    // right
+    let rightCol = clicked_piece.col + 2;
+    if (rightCol <= 7) {
+        let uRow = clicked_piece.row-1;
+        if (uRow >= 0) {
+            div = document.querySelector(`[data-row='${uRow}'][data-col='${rightCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+        let dRow = clicked_piece.row+1;
+        if (dRow <= 7) {
+            div = document.querySelector(`[data-row='${dRow}'][data-col='${rightCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+    }
+
     console.log(availableSquare);
 }
 
