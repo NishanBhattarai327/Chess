@@ -42,6 +42,10 @@ function showAvailableSquare(clicked_piece) {
         availableSquare = [];
         findAvailableSquaresForPawn(clicked_piece);
     }
+    if (clicked_piece.name.includes("bishop")) {
+        availableSquare = [];
+        findAvailableSquaresForBishop(clicked_piece);
+    }
 
     availableSquare.forEach((div) => {
         div.classList.add("available");
@@ -96,6 +100,8 @@ function findAvailableSquaresForPawn(clicked_piece) {
                     availableSquare.push(down2Div);
                 }
             }
+        } else {  // pawn is block by piece
+            
         }
     }
     if (clicked_piece.name.includes("black")) {
@@ -107,6 +113,57 @@ function findAvailableSquaresForPawn(clicked_piece) {
                 if (!up2Div.hasChildNodes()) {
                     availableSquare.push(up2Div);
                 }
+            }
+        }
+    }
+    console.log(availableSquare);
+}
+
+function findAvailableSquaresForBishop(clicked_piece) {
+    let lCol = clicked_piece.col-1;
+    let rCol = clicked_piece.col+1;
+    for (let i = clicked_piece.row-1; i >= 0; i--) {   // Upper Diagonal
+        if (lCol !== -1 && lCol >= 0) {
+            let upLeftDiv = document.querySelector(`[data-row='${i}'][data-col='${lCol}']`);
+            if (!upLeftDiv.hasChildNodes()) {  // left upper diagonal
+                availableSquare.push(upLeftDiv);
+                lCol--;
+            } else {
+                lCol = -1;
+            }
+        }
+
+        if (rCol !== -1 && rCol <= 7) {
+            let upRightDiv = document.querySelector(`[data-row='${i}'][data-col='${rCol}']`);
+            if (!upRightDiv.hasChildNodes()) {  // right upper diagonal
+                availableSquare.push(upRightDiv);
+                rCol++;
+            } else {
+                rCol = -1;
+            }
+        }
+    }
+    
+    lCol = clicked_piece.col-1;
+    rCol = clicked_piece.col+1;
+    for (let i = clicked_piece.row+1; i <= 7; i++) {   // Lower Diagonal
+        if (lCol !== -1 && lCol >= 0) {
+            let downLeftDiv = document.querySelector(`[data-row='${i}'][data-col='${lCol}']`);
+            if (!downLeftDiv.hasChildNodes()) {  // left upper diagonal
+                availableSquare.push(downLeftDiv);
+                lCol--;
+            } else {
+                lCol = -1;
+            }
+        }
+        
+        if (rCol !== -1 && rCol <= 7) {
+            let downRightDiv = document.querySelector(`[data-row='${i}'][data-col='${rCol}']`);
+            if (!downRightDiv.hasChildNodes()) {  // right upper diagonal
+                availableSquare.push(downRightDiv);
+                rCol++;
+            } else {
+                rCol = -1;
             }
         }
     }
