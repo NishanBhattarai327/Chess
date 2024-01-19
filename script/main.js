@@ -55,6 +55,10 @@ function showAvailableSquare(clicked_piece) {
         availableSquare = [];
         findAvailableSquaresForKnight(clicked_piece);
     }
+    if (clicked_piece.name.includes("king")) {
+        availableSquare = [];
+        findAvailableSquaresForKing(clicked_piece);
+    }
 
     availableSquare.forEach((div) => {
         div.classList.add("available");
@@ -255,6 +259,79 @@ function findAvailableSquaresForKnight(clicked_piece) {
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
             }
+        }
+    }
+
+    console.log(availableSquare);
+}
+
+function findAvailableSquaresForKing(clicked_piece) {
+    let div;
+
+    // up
+    let upRow = clicked_piece.row - 1;
+    if (upRow >= 0) {
+        div = document.querySelector(`[data-row='${upRow}'][data-col='${clicked_piece.col}']`);
+        if (!div.hasChildNodes()) {
+            availableSquare.push(div);
+        }
+        // up-left
+        let lCol = clicked_piece.col-1;
+        if (lCol >= 0) {
+            div = document.querySelector(`[data-row='${upRow}'][data-col='${lCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+        // up-right
+        let rCol = clicked_piece.col+1;
+        if (rCol <= 7) {
+            div = document.querySelector(`[data-row='${upRow}'][data-col='${rCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+    }
+
+    // down
+    let downRow = clicked_piece.row + 1;
+    if (downRow <= 7) {
+        div = document.querySelector(`[data-row='${downRow}'][data-col='${clicked_piece.col}']`);
+        if (!div.hasChildNodes()) {
+            availableSquare.push(div);
+        }
+        // down-left
+        let lCol = clicked_piece.col-1;
+        if (lCol >= 0) {
+            div = document.querySelector(`[data-row='${downRow}'][data-col='${lCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+        // down-right
+        let rCol = clicked_piece.col+1;
+        if (rCol <= 7) {
+            div = document.querySelector(`[data-row='${downRow}'][data-col='${rCol}']`);
+            if (!div.hasChildNodes()) {
+                availableSquare.push(div);
+            }
+        }
+    }
+
+    // left
+    let leftCol = clicked_piece.col - 1;
+    if (leftCol >= 0) {
+        div = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${leftCol}']`);
+        if (!div.hasChildNodes()) {
+            availableSquare.push(div);
+        }
+    }
+    // right
+    let rightCol = clicked_piece.col + 1;
+    if (rightCol <= 7) {
+        div = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${rightCol}']`);
+        if (!div.hasChildNodes()) {
+            availableSquare.push(div);
         }
     }
 
