@@ -219,6 +219,10 @@ function findAvailableSquaresForKnight(clicked_piece) {
             div = document.querySelector(`[data-row='${upRow}'][data-col='${lCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
         let rCol = clicked_piece.col+1;
@@ -226,6 +230,10 @@ function findAvailableSquaresForKnight(clicked_piece) {
             div = document.querySelector(`[data-row='${upRow}'][data-col='${rCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
     }
@@ -238,6 +246,10 @@ function findAvailableSquaresForKnight(clicked_piece) {
             div = document.querySelector(`[data-row='${downRow}'][data-col='${lCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
         let rCol = clicked_piece.col+1;
@@ -245,6 +257,10 @@ function findAvailableSquaresForKnight(clicked_piece) {
             div = document.querySelector(`[data-row='${downRow}'][data-col='${rCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
     }
@@ -257,6 +273,10 @@ function findAvailableSquaresForKnight(clicked_piece) {
             div = document.querySelector(`[data-row='${uRow}'][data-col='${leftCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
         let dRow = clicked_piece.row+1;
@@ -264,6 +284,10 @@ function findAvailableSquaresForKnight(clicked_piece) {
             div = document.querySelector(`[data-row='${dRow}'][data-col='${leftCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
     }
@@ -277,6 +301,10 @@ function findAvailableSquaresForKnight(clicked_piece) {
             div = document.querySelector(`[data-row='${uRow}'][data-col='${rightCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
         let dRow = clicked_piece.row+1;
@@ -284,6 +312,10 @@ function findAvailableSquaresForKnight(clicked_piece) {
             div = document.querySelector(`[data-row='${dRow}'][data-col='${rightCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
     }
