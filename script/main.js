@@ -74,32 +74,42 @@ function findAvailableSquaresForRook(clicked_piece) {
     let rowDiv = document.querySelectorAll(`[data-row='${clicked_piece.row}']`);
     let colDiv = document.querySelectorAll(`[data-col='${clicked_piece.col}']`);
 
-    // console.log(rowDiv);
-    // console.log(colDiv);
     console.log(clicked_piece.row, clicked_piece.col);
 
-    for (let i = clicked_piece.col-1; i >= 0; i--) {
-        // console.log("left: ", i);
-        if (rowDiv[i].hasChildNodes())
+    for (let i = clicked_piece.col-1; i >= 0; i--) {  // left
+        if (rowDiv[i].hasChildNodes()) {
+            if (isOpponentPiece(rowDiv[i].firstChild.alt, clicked_piece.name)) {
+                availableSquare.push(rowDiv[i]);
+            }
             break;
+        }
         availableSquare.push(rowDiv[i]);
     }
-    for (let i = clicked_piece.col+1; i <= 7; i++) {
-        // console.log("right: ", i);
-        if (rowDiv[i].hasChildNodes())
+    for (let i = clicked_piece.col+1; i <= 7; i++) {   // right
+        if (rowDiv[i].hasChildNodes()) {
+            if (isOpponentPiece(rowDiv[i].firstChild.alt, clicked_piece.name)) {
+                availableSquare.push(rowDiv[i]);
+            }
             break;
+        }
         availableSquare.push(rowDiv[i]);
     }
-    for (let j = clicked_piece.row-1; j >= 0; j--) {
-        // console.log("up: ", j, colDiv[j]);
-        if (colDiv[j].hasChildNodes())
+    for (let j = clicked_piece.row-1; j >= 0; j--) {   // up
+        if (colDiv[j].hasChildNodes()) {
+            if (isOpponentPiece(colDiv[j].firstChild.alt, clicked_piece.name)) {
+                availableSquare.push(colDiv[j]);
+            }
             break;
+        }
         availableSquare.push(colDiv[j]);
     }
-    for (let j = clicked_piece.row+1; j <= 7; j++) {
-        // console.log("down: ", j, colDiv[j]);
-        if (colDiv[j].hasChildNodes())
+    for (let j = clicked_piece.row+1; j <= 7; j++) {   // down
+        if (colDiv[j].hasChildNodes()) {
+            if (isOpponentPiece(colDiv[j].firstChild.alt, clicked_piece.name)) {
+                availableSquare.push(colDiv[j]);
+            }
             break;
+        }
         availableSquare.push(colDiv[j]);
     }
 
