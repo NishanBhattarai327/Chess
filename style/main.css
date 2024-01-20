@@ -68,6 +68,11 @@
 	cursor: pointer;
 }
 
+.check {
+	box-sizing: border-box;
+	border: 4px solid rgba(229, 57, 57, 0.921);
+}
+
 .clicked {
 	box-sizing: border-box;
 	border: 4px solid rgb(27, 18, 25);

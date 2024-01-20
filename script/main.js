@@ -64,7 +64,10 @@ function showAvailableSquare(clicked_piece) {
         div.classList.add("available");
         if (div.hasChildNodes()) {
             div.firstChild.removeAttribute("onclick");
-            console.log("a-div ", div);
+            if (div.firstChild.alt.includes("king")) {
+                div.classList.add("check");
+                console.log("check");
+            }
         }
         div.setAttribute("onclick","moveToMe(this, clicked_piece)");
     });
@@ -128,7 +131,25 @@ function findAvailableSquaresForPawn(clicked_piece) {
                 }
             }
         } else {  // pawn is block by piece
-            
+            let nextRow = clicked_piece.row + 1;
+            let nextLCol = clicked_piece.col - 1;
+            let nextRCol = clicked_piece.col + 1;
+            if (nextLCol >= 0) {
+                let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextLCol}']`);
+                if (div.hasChildNodes()) {
+                    if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                        availableSquare.push(div);
+                    }
+                }
+            }
+            if (nextRCol <= 7) {
+                let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextRCol}']`);
+                if (div.hasChildNodes()) {
+                    if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                        availableSquare.push(div);
+                    }
+                }
+            }
         }
     }
     if (clicked_piece.name.includes("black")) {
@@ -139,6 +160,26 @@ function findAvailableSquaresForPawn(clicked_piece) {
                 let up2Div = document.querySelector(`[data-row='${clicked_piece.row-2}'][data-col='${clicked_piece.col}']`);
                 if (!up2Div.hasChildNodes()) {
                     availableSquare.push(up2Div);
+                }
+            }
+        } else {  // pawn is block by piece
+            let nextRow = clicked_piece.row - 1;
+            let nextLCol = clicked_piece.col - 1;
+            let nextRCol = clicked_piece.col + 1;
+            if (nextLCol >= 0) {
+                let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextLCol}']`);
+                if (div.hasChildNodes()) {
+                    if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                        availableSquare.push(div);
+                    }
+                }
+            }
+            if (nextRCol <= 7) {
+                let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextRCol}']`);
+                if (div.hasChildNodes()) {
+                    if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                        availableSquare.push(div);
+                    }
                 }
             }
         }
@@ -443,6 +484,9 @@ function hideAvailableSquare() {
         div.removeAttribute("onclick");
         if (div.hasChildNodes()) {
             div.firstChild.setAttribute("onclick", "clickHandler(this)");
+            if (div.firstChild.alt.includes("king")) {
+                div.classList.remove("check");
+            }
         }
     });
 }
