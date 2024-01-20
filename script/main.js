@@ -62,6 +62,10 @@ function showAvailableSquare(clicked_piece) {
 
     availableSquare.forEach((div) => {
         div.classList.add("available");
+        if (div.hasChildNodes()) {
+            div.firstChild.removeAttribute("onclick");
+            console.log("a-div ", div);
+        }
         div.setAttribute("onclick","moveToMe(this, clicked_piece)");
     });
 }
@@ -142,6 +146,9 @@ function findAvailableSquaresForBishop(clicked_piece) {
                 availableSquare.push(upLeftDiv);
                 lCol--;
             } else {
+                if (isOpponentPiece(upLeftDiv.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(upLeftDiv);
+                }
                 lCol = -1;
             }
         }
@@ -152,6 +159,9 @@ function findAvailableSquaresForBishop(clicked_piece) {
                 availableSquare.push(upRightDiv);
                 rCol++;
             } else {
+                if (isOpponentPiece(upRightDiv.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(upRightDiv);
+                }
                 rCol = -1;
             }
         }
@@ -166,6 +176,9 @@ function findAvailableSquaresForBishop(clicked_piece) {
                 availableSquare.push(downLeftDiv);
                 lCol--;
             } else {
+                if (isOpponentPiece(downLeftDiv.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(downLeftDiv);
+                }
                 lCol = -1;
             }
         }
@@ -176,6 +189,9 @@ function findAvailableSquaresForBishop(clicked_piece) {
                 availableSquare.push(downRightDiv);
                 rCol++;
             } else {
+                if (isOpponentPiece(downRightDiv.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(downRightDiv);
+                }
                 rCol = -1;
             }
         }
@@ -339,6 +355,9 @@ function findAvailableSquaresForKing(clicked_piece) {
 }
 
 function moveToMe(targetDiv, clicked_piece) {
+    if (targetDiv.hasChildNodes()) {  // if target square have opponent piece
+        targetDiv.firstChild.remove();
+    }
     targetDiv.appendChild(clicked_piece.div.firstChild);
     unselectPiece(clicked_piece.div);
     hideAvailableSquare();
@@ -348,5 +367,16 @@ function hideAvailableSquare() {
     availableSquare.forEach(div => {
         div.classList.remove("available");
         div.removeAttribute("onclick");
+        if (div.hasChildNodes()) {
+            div.firstChild.setAttribute("onclick", "clickHandler(this)");
+        }
     });
+}
+
+function isOpponentPiece(selectedPiece, stopingPiece) {
+    if (selectedPiece.includes("white") && stopingPiece.includes("white"))
+        return false;
+    if (selectedPiece.includes("black") && stopingPiece.includes("black"))
+        return false;
+    return true;
 }
