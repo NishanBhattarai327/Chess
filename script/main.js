@@ -1,5 +1,7 @@
 let clicked_piece = {};
 let availableSquare = [];
+let check = false;
+let turn = "white";
 
 function clickHandler(img) {
     if (img.parentElement !== clicked_piece.div) {
@@ -34,43 +36,46 @@ function showAvailableSquare(clicked_piece) {
     if (clicked_piece === undefined)
         return;
 
-    if (clicked_piece.name.includes("rook")) {
-        availableSquare = [];
-        findAvailableSquaresForRook(clicked_piece);
-    }
-    if (clicked_piece.name.includes("pawn")) {
-        availableSquare = [];
-        findAvailableSquaresForPawn(clicked_piece);
-    }
-    if (clicked_piece.name.includes("bishop")) {
-        availableSquare = [];
-        findAvailableSquaresForBishop(clicked_piece);
-    }
-    if (clicked_piece.name.includes("queen")) {
-        availableSquare = [];
-        findAvailableSquaresForBishop(clicked_piece);
-        findAvailableSquaresForRook(clicked_piece);
-    }
-    if (clicked_piece.name.includes("knight")) {
-        availableSquare = [];
-        findAvailableSquaresForKnight(clicked_piece);
-    }
-    if (clicked_piece.name.includes("king")) {
-        availableSquare = [];
-        findAvailableSquaresForKing(clicked_piece);
+    if (clicked_piece.name.includes(turn)) {
+        if (clicked_piece.name.includes("rook")) {
+            availableSquare = [];
+            findAvailableSquaresForRook(clicked_piece);
+        }
+        if (clicked_piece.name.includes("pawn")) {
+            availableSquare = [];
+            findAvailableSquaresForPawn(clicked_piece);
+        }
+        if (clicked_piece.name.includes("bishop")) {
+            availableSquare = [];
+            findAvailableSquaresForBishop(clicked_piece);
+        }
+        if (clicked_piece.name.includes("queen")) {
+            availableSquare = [];
+            findAvailableSquaresForBishop(clicked_piece);
+            findAvailableSquaresForRook(clicked_piece);
+        }
+        if (clicked_piece.name.includes("knight")) {
+            availableSquare = [];
+            findAvailableSquaresForKnight(clicked_piece);
+        }
+        if (clicked_piece.name.includes("king")) {
+            availableSquare = [];
+            findAvailableSquaresForKing(clicked_piece);
+        }
+        
+        availableSquare.forEach((div) => {
+            div.classList.add("available");
+            if (div.hasChildNodes()) {
+                div.firstChild.removeAttribute("onclick");
+                if (div.firstChild.alt.includes("king")) {
+                    div.classList.add("check");
+                    console.log("check");
+                }
+            }
+            div.setAttribute("onclick","moveToMe(this, clicked_piece)");
+        });
     }
 
-    availableSquare.forEach((div) => {
-        div.classList.add("available");
-        if (div.hasChildNodes()) {
-            div.firstChild.removeAttribute("onclick");
-            if (div.firstChild.alt.includes("king")) {
-                div.classList.add("check");
-                console.log("check");
-            }
-        }
-        div.setAttribute("onclick","moveToMe(this, clicked_piece)");
-    });
 }
 
 function findAvailableSquaresForRook(clicked_piece) {
@@ -470,6 +475,7 @@ function findAvailableSquaresForKing(clicked_piece) {
 }
 
 function moveToMe(targetDiv, clicked_piece) {
+    toggleTurn();
     if (targetDiv.hasChildNodes()) {  // if target square have opponent piece
         targetDiv.firstChild.remove();
     }
@@ -497,4 +503,11 @@ function isOpponentPiece(selectedPiece, stopingPiece) {
     if (selectedPiece.includes("black") && stopingPiece.includes("black"))
         return false;
     return true;
+}
+
+function toggleTurn() {
+    if (turn === "white")
+        turn = "black";
+    else
+        turn = "white";
 }
