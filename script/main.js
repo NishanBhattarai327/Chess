@@ -332,6 +332,10 @@ function findAvailableSquaresForKing(clicked_piece) {
         div = document.querySelector(`[data-row='${upRow}'][data-col='${clicked_piece.col}']`);
         if (!div.hasChildNodes()) {
             availableSquare.push(div);
+        } else {
+            if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                availableSquare.push(div);
+            }
         }
         // up-left
         let lCol = clicked_piece.col-1;
@@ -339,6 +343,10 @@ function findAvailableSquaresForKing(clicked_piece) {
             div = document.querySelector(`[data-row='${upRow}'][data-col='${lCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
         // up-right
@@ -347,6 +355,10 @@ function findAvailableSquaresForKing(clicked_piece) {
             div = document.querySelector(`[data-row='${upRow}'][data-col='${rCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
     }
@@ -357,6 +369,10 @@ function findAvailableSquaresForKing(clicked_piece) {
         div = document.querySelector(`[data-row='${downRow}'][data-col='${clicked_piece.col}']`);
         if (!div.hasChildNodes()) {
             availableSquare.push(div);
+        } else {
+            if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                availableSquare.push(div);
+            }
         }
         // down-left
         let lCol = clicked_piece.col-1;
@@ -364,6 +380,10 @@ function findAvailableSquaresForKing(clicked_piece) {
             div = document.querySelector(`[data-row='${downRow}'][data-col='${lCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
         // down-right
@@ -372,6 +392,10 @@ function findAvailableSquaresForKing(clicked_piece) {
             div = document.querySelector(`[data-row='${downRow}'][data-col='${rCol}']`);
             if (!div.hasChildNodes()) {
                 availableSquare.push(div);
+            } else {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
+                }
             }
         }
     }
@@ -382,6 +406,10 @@ function findAvailableSquaresForKing(clicked_piece) {
         div = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${leftCol}']`);
         if (!div.hasChildNodes()) {
             availableSquare.push(div);
+        } else {
+            if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                availableSquare.push(div);
+            }
         }
     }
     // right
@@ -390,6 +418,10 @@ function findAvailableSquaresForKing(clicked_piece) {
         div = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${rightCol}']`);
         if (!div.hasChildNodes()) {
             availableSquare.push(div);
+        } else {
+            if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                availableSquare.push(div);
+            }
         }
     }
 
