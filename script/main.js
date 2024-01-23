@@ -5,7 +5,7 @@ let turn = "white";
 
 function clickHandler(img) {
     if (img.parentElement !== clicked_piece.div) {
-        unselectPiece(clicked_piece.div);
+        unselectPiece();
         hideAvailableSquare();
     }
 
@@ -15,7 +15,7 @@ function clickHandler(img) {
     clicked_piece.col = parseInt(img.parentElement.dataset.col);
 
     if (img.parentElement.classList.contains("clicked")) {
-        unselectPiece(clicked_piece.div);
+        unselectPiece();
         hideAvailableSquare();
     }
     else {
@@ -23,20 +23,14 @@ function clickHandler(img) {
         showAvailableSquare(clicked_piece);
     }
 
-    console.log(clicked_piece);
-}
-
-function unselectPiece(pieceDiv) {
-    if (pieceDiv === undefined)
-        return;
-    pieceDiv.classList.remove("clicked");
+    // console.log(clicked_piece);
 }
 
 function showAvailableSquare(clicked_piece) {
     if (clicked_piece === undefined)
         return;
 
-    if (clicked_piece.name.includes(turn)) {
+    // if (clicked_piece.name.includes(turn)) {
         if (clicked_piece.name.includes("rook")) {
             availableSquare = [];
             findAvailableSquaresForRook(clicked_piece);
@@ -67,14 +61,10 @@ function showAvailableSquare(clicked_piece) {
             div.classList.add("available");
             if (div.hasChildNodes()) {
                 div.firstChild.removeAttribute("onclick");
-                if (div.firstChild.alt.includes("king")) {
-                    div.classList.add("check");
-                    console.log("check");
-                }
             }
-            div.setAttribute("onclick","moveToMe(this, clicked_piece)");
+            div.setAttribute("onclick","moveToMe(this)");
         });
-    }
+    // }
 
 }
 
@@ -82,7 +72,7 @@ function findAvailableSquaresForRook(clicked_piece) {
     let rowDiv = document.querySelectorAll(`[data-row='${clicked_piece.row}']`);
     let colDiv = document.querySelectorAll(`[data-col='${clicked_piece.col}']`);
 
-    console.log(clicked_piece.row, clicked_piece.col);
+    // console.log(clicked_piece.row, clicked_piece.col);
 
     for (let i = clicked_piece.col-1; i >= 0; i--) {  // left
         if (rowDiv[i].hasChildNodes()) {
@@ -121,7 +111,7 @@ function findAvailableSquaresForRook(clicked_piece) {
         availableSquare.push(colDiv[j]);
     }
 
-    console.log(availableSquare);
+    // console.log(availableSquare);
 }
 
 function findAvailableSquaresForPawn(clicked_piece) {
@@ -189,7 +179,7 @@ function findAvailableSquaresForPawn(clicked_piece) {
             }
         }
     }
-    console.log(availableSquare);
+    // console.log(availableSquare);
 }
 
 function findAvailableSquaresForBishop(clicked_piece) {
@@ -252,7 +242,7 @@ function findAvailableSquaresForBishop(clicked_piece) {
             }
         }
     }
-    console.log(availableSquare);
+    // console.log(availableSquare);
 }
 
 function findAvailableSquaresForKnight(clicked_piece) {
@@ -366,7 +356,7 @@ function findAvailableSquaresForKnight(clicked_piece) {
         }
     }
 
-    console.log(availableSquare);
+    // console.log(availableSquare);
 }
 
 function findAvailableSquaresForKing(clicked_piece) {
@@ -471,27 +461,80 @@ function findAvailableSquaresForKing(clicked_piece) {
         }
     }
 
-    console.log(availableSquare);
+    // console.log(availableSquare);
 }
 
-function moveToMe(targetDiv, clicked_piece) {
-    toggleTurn();
+function moveToMe(targetDiv) {
+    // toggleTurn();   // change the turn
+
+    let prevBoard = document.querySelector(".board").innerHTML;
+    let lastWasCheck = check;
+
     if (targetDiv.hasChildNodes()) {  // if target square have opponent piece
         targetDiv.firstChild.remove();
     }
     targetDiv.appendChild(clicked_piece.div.firstChild);
-    unselectPiece(clicked_piece.div);
+    
+    checkForCheck();
+
+    let kingColor = clicked_piece.name.includes("white") ? "black" : "white";
+    if (check) {
+        document.querySelector(`img[alt='${kingColor} king']`).parentElement.classList.add("check");
+    }
+    // if we move the piece in checked state and still there is check undo the move
+    console.log("previously checked: ", lastWasCheck, "   Current-checked: ", check);
+    if (lastWasCheck && check ) {  
+        document.querySelector(".board").innerHTML = prevBoard;
+    }
+    else if (lastWasCheck && !check) {
+        document.querySelector(".check").classList.remove("check");
+    }
+    unselectPiece();
     hideAvailableSquare();
 }
 
+function checkForCheck() {
+    let prevClicked_piece = { ...clicked_piece };
+    let prevAvailableSquare = [...availableSquare];
+
+    check = false;    // lets start by assuming there is no check
+    let squaresDiv = document.querySelectorAll(`.square`);
+    squaresDiv.forEach(div => {
+        if (div.hasChildNodes()) {
+            // simulate the click and check for available move if it has king or not
+            clickHandler(div.firstChild);
+            availableSquare.forEach(div => {
+                if (div.hasChildNodes()) {
+                    if (div.firstChild.alt.includes("king")) {
+                        check = true;
+                        return;
+                    }
+                }
+            });
+            unselectPiece();
+            hideAvailableSquare();
+        }
+    });
+    availableSquare = prevAvailableSquare;
+    clicked_piece = Object.assign({}, prevClicked_piece);
+}
+
+function unselectPiece() {
+    let selectedDiv = document.querySelector(".clicked");
+    if (selectedDiv)
+        selectedDiv.classList.remove("clicked");
+}
+
 function hideAvailableSquare() {
-    availableSquare.forEach(div => {
+    let availableDiv = document.querySelectorAll(".available");
+    availableDiv.forEach(div => {
         div.classList.remove("available");
         div.removeAttribute("onclick");
         if (div.hasChildNodes()) {
             div.firstChild.setAttribute("onclick", "clickHandler(this)");
             if (div.firstChild.alt.includes("king")) {
-                div.classList.remove("check");
+                if (!check) 
+                    div.classList.remove("check");
             }
         }
     });
