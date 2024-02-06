@@ -125,24 +125,24 @@ function findAvailableSquaresForPawn(clicked_piece) {
                     availableSquare.push(down2Div);
                 }
             }
-        } else {  // pawn is block by piece
-            let nextRow = clicked_piece.row + 1;
-            let nextLCol = clicked_piece.col - 1;
-            let nextRCol = clicked_piece.col + 1;
-            if (nextLCol >= 0) {
-                let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextLCol}']`);
-                if (div.hasChildNodes()) {
-                    if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
-                        availableSquare.push(div);
-                    }
+        }
+        // look for opponent piece to eat
+        let nextRow = clicked_piece.row + 1;
+        let nextLCol = clicked_piece.col - 1;
+        let nextRCol = clicked_piece.col + 1;
+        if (nextLCol >= 0) {
+            let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextLCol}']`);
+            if (div.hasChildNodes()) {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
                 }
             }
-            if (nextRCol <= 7) {
-                let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextRCol}']`);
-                if (div.hasChildNodes()) {
-                    if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
-                        availableSquare.push(div);
-                    }
+        }
+        if (nextRCol <= 7) {
+            let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextRCol}']`);
+            if (div.hasChildNodes()) {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
                 }
             }
         }
@@ -157,24 +157,24 @@ function findAvailableSquaresForPawn(clicked_piece) {
                     availableSquare.push(up2Div);
                 }
             }
-        } else {  // pawn is block by piece
-            let nextRow = clicked_piece.row - 1;
-            let nextLCol = clicked_piece.col - 1;
-            let nextRCol = clicked_piece.col + 1;
-            if (nextLCol >= 0) {
-                let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextLCol}']`);
-                if (div.hasChildNodes()) {
-                    if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
-                        availableSquare.push(div);
-                    }
+        } 
+        // look for opponent piece to eat
+        let nextRow = clicked_piece.row - 1;
+        let nextLCol = clicked_piece.col - 1;
+        let nextRCol = clicked_piece.col + 1;
+        if (nextLCol >= 0) {
+            let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextLCol}']`);
+            if (div.hasChildNodes()) {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
                 }
             }
-            if (nextRCol <= 7) {
-                let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextRCol}']`);
-                if (div.hasChildNodes()) {
-                    if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
-                        availableSquare.push(div);
-                    }
+        }
+        if (nextRCol <= 7) {
+            let div = document.querySelector(`[data-row='${nextRow}'][data-col='${nextRCol}']`);
+            if (div.hasChildNodes()) {
+                if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
+                    availableSquare.push(div);
                 }
             }
         }
