@@ -3,12 +3,17 @@
 	padding: 0;
 }
 
+.container {
+	margin: auto;
+	margin-top: 10%;
+	width: 50%;
+}
+
 .board {
 	width: 400px;
 	height: 400px;
 	display: flex;
 	flex-wrap: wrap;
-
 	box-sizing: border-box;
 }
 
