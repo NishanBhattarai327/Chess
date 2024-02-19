@@ -474,6 +474,15 @@ function moveToMe(targetDiv) {
         targetDiv.firstChild.remove();
     }
     targetDiv.appendChild(clicked_piece.div.firstChild);
+    // check for pawn promotion
+    if (clicked_piece.name.includes("pawn")) {
+        if (targetDiv.dataset.row === '0') {
+            targetDiv.innerHTML = `<img onclick="clickHandler(this)" src="./imgs/black_queen.png" alt="black queen">`;
+        }
+        if (targetDiv.dataset.row === '7') {
+            targetDiv.innerHTML = `<img onclick="clickHandler(this)" src="./imgs/white_queen.png" alt="white queen">`;
+        } 
+    }
     
     checkForCheck();
 
