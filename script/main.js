@@ -461,6 +461,53 @@ function findAvailableSquaresForKing(clicked_piece) {
         }
     }
 
+    // check for clasting
+    if (clicked_piece.name.includes("unmoved")) {
+        let col = clicked_piece.col;
+        // king side 
+        let cKing = true;
+        for (let i = col+1; i < 7; i++) {
+            let sqr = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${i}']`);
+            if (sqr.hasChildNodes()) {
+                cKing = false;
+                break;
+            }
+            cKing = true;
+        }
+        // check for rook movement
+        let rRookDiv = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${7}']`);
+        if (rRookDiv.hasChildNodes()) {
+            if (rRookDiv.firstChild.alt.includes("unmoved")) {
+                if (cKing === true) {
+                    let kSideDiv = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${clicked_piece.col + 2}']`)
+                    availableSquare.push(kSideDiv);
+                }
+            }
+        }
+        
+        // Queen side
+        let cQueen = true;
+        for (let i = col-1; i > 0; i--) {
+            let sqr = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${i}']`);
+            if (sqr.hasChildNodes()) {
+                cQueen = false;
+                break;
+            }
+            cQueen = true;
+        }
+
+        // check for rook movement
+        let lRookDiv = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${0}']`);
+        if (lRookDiv.hasChildNodes()) {
+            if (lRookDiv.firstChild.alt.includes("unmoved")) {
+                if (cQueen === true) {
+                    let qSideDiv = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${clicked_piece.col - 2}']`)
+                    availableSquare.push(qSideDiv);
+                }
+            }
+        }
+    }
+
     // console.log(availableSquare);
 }
 
@@ -474,6 +521,29 @@ function moveToMe(targetDiv) {
         targetDiv.firstChild.remove();
     }
     targetDiv.appendChild(clicked_piece.div.firstChild);
+
+    // check if the king move is castling, if so also move the rook accordingly
+    if (clicked_piece.name.includes("king")) {
+        let side = isCastlingMove(clicked_piece, targetDiv);
+        if (side !== 0) {
+            let rookCol = clicked_piece.col + side;
+            let rookRow = clicked_piece.row;
+            let rookPiece;
+            if (side === 1) {
+                let div = document.querySelector(`[data-row='${rookRow}'][data-col='${7}']`);
+                rookPiece = div.firstChild;
+                div.firstChild.remove();
+            }
+            if (side === -1) {
+                let div = document.querySelector(`[data-row='${rookRow}'][data-col='${0}']`);
+                rookPiece = div.firstChild;
+                div.firstChild.remove();
+            }
+            let rookDiv = document.querySelector(`[data-row='${rookRow}'][data-col='${rookCol}']`);
+            rookDiv.appendChild(rookPiece);
+        }
+    }
+
     // check for pawn promotion
     if (clicked_piece.name.includes("pawn")) {
         if (targetDiv.dataset.row === '0') {
@@ -483,6 +553,11 @@ function moveToMe(targetDiv) {
             targetDiv.innerHTML = `<img onclick="clickHandler(this)" src="./imgs/white_queen.png" alt="white queen">`;
         } 
     }
+
+    // if rook or king is moved, change their unmoved status to changed
+    if (clicked_piece.name.includes("king") || clicked_piece.name.includes("rook")) {
+        targetDiv.firstChild.alt = targetDiv.firstChild.alt.replace("unmoved", "changed");
+    }     
     
     checkForCheck();
 
@@ -500,6 +575,22 @@ function moveToMe(targetDiv) {
     }
     unselectPiece();
     hideAvailableSquare();
+}
+
+/* this function checks for castling move and return number indicating the side
+ * if return 1 (king side castling)
+ * if return -1 (queen side castling)
+ * if return 0 (no castling)
+*/
+function isCastlingMove(kingPiece, targetDiv) {
+    let prevCol = kingPiece.col;
+    let currCol = parseInt(targetDiv.dataset.col);
+    let movedSquares = currCol - prevCol;
+    if (movedSquares === 2)
+        return 1;
+    if (movedSquares === -2)
+        return -1;
+    return 0;
 }
 
 function checkForCheck() {
