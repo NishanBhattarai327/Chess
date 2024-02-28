@@ -20,52 +20,120 @@ function clickHandler(img) {
     }
     else {
         clicked_piece.div.classList.add("clicked");
-        showAvailableSquare(clicked_piece);
+        findAvailableSquare(clicked_piece);
+        checkForCastling(clicked_piece);
+        filterCheckedSquareForKing(clicked_piece);
+        showAvailableSquare();
     }
 
     // console.log(clicked_piece);
 }
 
-function showAvailableSquare(clicked_piece) {
-    if (clicked_piece === undefined)
+function checkForCastling(kingPiece) {
+    if (!kingPiece.name.includes("king"))   // if kingPeice is not king, return
+        return;
+    
+    if (!kingPiece.name.includes("unmoved"))  // if king is moved, return
+        return;
+    
+    let kingColor = kingPiece.name.split(" ")[0];  // color is first word of name
+    let col = kingPiece.col;
+    // king side 
+    let cKing = true;
+    for (let i = col+1; i < 7; i++) {
+        let sqr = document.querySelector(`[data-row='${kingPiece.row}'][data-col='${i}']`);
+        if (sqr.hasChildNodes() || isSquareInCheck(sqr, kingColor)) {
+            cKing = false;
+            break;
+        }
+        cKing = true;
+    }
+    // if there is possiblity for king side castling
+    if (cKing === true) {
+        // check for rook movement
+        let rRookDiv = document.querySelector(`[data-row='${kingPiece.row}'][data-col='${7}']`);
+        if (rRookDiv.hasChildNodes()) {
+            if (rRookDiv.firstChild.alt.includes("unmoved")) {
+                let kSideDiv = document.querySelector(`[data-row='${kingPiece.row}'][data-col='${kingPiece.col + 2}']`)
+                availableSquare.push(kSideDiv);
+            }
+        }
+    }
+    
+    // Queen side
+    let cQueen = true;
+    for (let i = col-1; i > 0; i--) {
+        let sqr = document.querySelector(`[data-row='${kingPiece.row}'][data-col='${i}']`);
+        if (sqr.hasChildNodes() || isSquareInCheck(sqr, kingColor)) {
+            cQueen = false;
+            break;
+        }
+        cQueen = true;
+    }
+
+    // if there is the possibility for queen side castling
+    if (cQueen === true) {
+        // check for rook movement
+        let lRookDiv = document.querySelector(`[data-row='${kingPiece.row}'][data-col='${0}']`);
+        if (lRookDiv.hasChildNodes()) {
+            if (lRookDiv.firstChild.alt.includes("unmoved")) {
+                let qSideDiv = document.querySelector(`[data-row='${kingPiece.row}'][data-col='${clicked_piece.col - 2}']`)
+                availableSquare.push(qSideDiv);
+            }
+        }
+    }
+}
+
+function filterCheckedSquareForKing(kingPiece)
+{
+    if (!kingPiece.name.includes("king"))  // if kingPiece is not king, return
         return;
 
-    // if (clicked_piece.name.includes(turn)) {
-        if (clicked_piece.name.includes("rook")) {
-            availableSquare = [];
-            findAvailableSquaresForRook(clicked_piece);
-        }
-        if (clicked_piece.name.includes("pawn")) {
-            availableSquare = [];
-            findAvailableSquaresForPawn(clicked_piece);
-        }
-        if (clicked_piece.name.includes("bishop")) {
-            availableSquare = [];
-            findAvailableSquaresForBishop(clicked_piece);
-        }
-        if (clicked_piece.name.includes("queen")) {
-            availableSquare = [];
-            findAvailableSquaresForBishop(clicked_piece);
-            findAvailableSquaresForRook(clicked_piece);
-        }
-        if (clicked_piece.name.includes("knight")) {
-            availableSquare = [];
-            findAvailableSquaresForKnight(clicked_piece);
-        }
-        if (clicked_piece.name.includes("king")) {
-            availableSquare = [];
-            findAvailableSquaresForKing(clicked_piece);
-        }
-        
-        availableSquare.forEach((div) => {
-            div.classList.add("available");
-            if (div.hasChildNodes()) {
-                div.firstChild.removeAttribute("onclick");
-            }
-            div.setAttribute("onclick","moveToMe(this)");
-        });
-    // }
+    let kingColor = kingPiece.name.split(" ")[0];
+    availableSquare = availableSquare.filter(sqr => !isSquareInCheck(sqr, kingColor));
+}
 
+function showAvailableSquare() {
+    availableSquare.forEach((div) => {
+        div.classList.add("available");
+        if (div.hasChildNodes()) {
+            div.firstChild.removeAttribute("onclick");
+        }
+        div.setAttribute("onclick","moveToMe(this)");
+    });
+}
+
+function findAvailableSquare(piece, flagForCheck = false) {
+    if (piece === undefined)
+        return;
+
+    // if (piece.name.includes(turn)) {
+        if (piece.name.includes("rook")) {
+            availableSquare = [];
+            findAvailableSquaresForRook(piece);
+        }
+        if (piece.name.includes("pawn")) {
+            availableSquare = [];
+            findAvailableSquaresForPawn(piece, flagForCheck);
+        }
+        if (piece.name.includes("bishop")) {
+            availableSquare = [];
+            findAvailableSquaresForBishop(piece);
+        }
+        if (piece.name.includes("queen")) {
+            availableSquare = [];
+            findAvailableSquaresForBishop(piece);
+            findAvailableSquaresForRook(piece);
+        }
+        if (piece.name.includes("knight")) {
+            availableSquare = [];
+            findAvailableSquaresForKnight(piece);
+        }
+        if (piece.name.includes("king")) {
+            availableSquare = [];
+            findAvailableSquaresForKing(piece);
+        }
+    // }
 }
 
 function findAvailableSquaresForRook(clicked_piece) {
@@ -114,10 +182,10 @@ function findAvailableSquaresForRook(clicked_piece) {
     // console.log(availableSquare);
 }
 
-function findAvailableSquaresForPawn(clicked_piece) {
+function findAvailableSquaresForPawn(clicked_piece, flagForCheck = false) {
     if (clicked_piece.name.includes("white")) {
         let downDiv = document.querySelector(`[data-row='${clicked_piece.row+1}'][data-col='${clicked_piece.col}']`);
-        if (!downDiv.hasChildNodes()) {
+        if (!downDiv.hasChildNodes() && !flagForCheck) {
             availableSquare.push(downDiv);
             if (clicked_piece.row == 1) {   // if its pawn first move
                 let down2Div = document.querySelector(`[data-row='${clicked_piece.row+2}'][data-col='${clicked_piece.col}']`);
@@ -136,6 +204,8 @@ function findAvailableSquaresForPawn(clicked_piece) {
                 if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
                     availableSquare.push(div);
                 }
+            } else if (flagForCheck) {
+                availableSquare.push(div);
             }
         }
         if (nextRCol <= 7) {
@@ -144,12 +214,14 @@ function findAvailableSquaresForPawn(clicked_piece) {
                 if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
                     availableSquare.push(div);
                 }
+            } else if (flagForCheck) {
+                availableSquare.push(div);
             }
         }
     }
     if (clicked_piece.name.includes("black")) {
         let upDiv = document.querySelector(`[data-row='${clicked_piece.row-1}'][data-col='${clicked_piece.col}']`);
-        if (!upDiv.hasChildNodes()) {
+        if (!upDiv.hasChildNodes() && !flagForCheck) {
             availableSquare.push(upDiv);
             if (clicked_piece.row == 6) {   // if its pawn first move
                 let up2Div = document.querySelector(`[data-row='${clicked_piece.row-2}'][data-col='${clicked_piece.col}']`);
@@ -168,6 +240,8 @@ function findAvailableSquaresForPawn(clicked_piece) {
                 if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
                     availableSquare.push(div);
                 }
+            } else if (flagForCheck) {
+                availableSquare.push(div);
             }
         }
         if (nextRCol <= 7) {
@@ -176,6 +250,8 @@ function findAvailableSquaresForPawn(clicked_piece) {
                 if (isOpponentPiece(div.firstChild.alt, clicked_piece.name)) {
                     availableSquare.push(div);
                 }
+            } else if (flagForCheck) {
+                availableSquare.push(div);
             }
         }
     }
@@ -461,53 +537,6 @@ function findAvailableSquaresForKing(clicked_piece) {
         }
     }
 
-    // check for clasting
-    if (clicked_piece.name.includes("unmoved")) {
-        let col = clicked_piece.col;
-        // king side 
-        let cKing = true;
-        for (let i = col+1; i < 7; i++) {
-            let sqr = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${i}']`);
-            if (sqr.hasChildNodes()) {
-                cKing = false;
-                break;
-            }
-            cKing = true;
-        }
-        // check for rook movement
-        let rRookDiv = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${7}']`);
-        if (rRookDiv.hasChildNodes()) {
-            if (rRookDiv.firstChild.alt.includes("unmoved")) {
-                if (cKing === true) {
-                    let kSideDiv = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${clicked_piece.col + 2}']`)
-                    availableSquare.push(kSideDiv);
-                }
-            }
-        }
-        
-        // Queen side
-        let cQueen = true;
-        for (let i = col-1; i > 0; i--) {
-            let sqr = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${i}']`);
-            if (sqr.hasChildNodes()) {
-                cQueen = false;
-                break;
-            }
-            cQueen = true;
-        }
-
-        // check for rook movement
-        let lRookDiv = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${0}']`);
-        if (lRookDiv.hasChildNodes()) {
-            if (lRookDiv.firstChild.alt.includes("unmoved")) {
-                if (cQueen === true) {
-                    let qSideDiv = document.querySelector(`[data-row='${clicked_piece.row}'][data-col='${clicked_piece.col - 2}']`)
-                    availableSquare.push(qSideDiv);
-                }
-            }
-        }
-    }
-
     // console.log(availableSquare);
 }
 
@@ -556,7 +585,7 @@ function moveToMe(targetDiv) {
 
     // if rook or king is moved, change their unmoved status to changed
     if (clicked_piece.name.includes("king") || clicked_piece.name.includes("rook")) {
-        targetDiv.firstChild.alt = targetDiv.firstChild.alt.replace("unmoved", "changed");
+        targetDiv.firstChild.alt = targetDiv.firstChild.alt.replace("unmoved", "");
     }     
     
     checkForCheck();
@@ -593,30 +622,60 @@ function isCastlingMove(kingPiece, targetDiv) {
     return 0;
 }
 
-function checkForCheck() {
-    let prevClicked_piece = { ...clicked_piece };
-    let prevAvailableSquare = [...availableSquare];
+function isSquareInCheck(square, kingColor) {
+    let prevAvailableSquare = availableSquare;
+    let oppPcs = document.querySelectorAll(`.square>img:not([alt*="${kingColor}"])`);
+    let flag = false;
 
-    check = false;    // lets start by assuming there is no check
-    let squaresDiv = document.querySelectorAll(`.square`);
-    squaresDiv.forEach(div => {
-        if (div.hasChildNodes()) {
-            // simulate the click and check for available move if it has king or not
-            clickHandler(div.firstChild);
-            availableSquare.forEach(div => {
-                if (div.hasChildNodes()) {
-                    if (div.firstChild.alt.includes("king")) {
-                        check = true;
-                        return;
-                    }
-                }
-            });
-            unselectPiece();
-            hideAvailableSquare();
+    oppPcs.forEach(elem => {
+        if (flag)
+            return;
+        let piece = getPieceFromImg(elem);
+        if (!piece.name.includes("king"))
+            findAvailableSquare(piece, true);
+
+        if (availableSquare.some(squareDiv => squareDiv === square)) {
+            flag = true;
+            return;
         }
     });
-    availableSquare = prevAvailableSquare;
-    clicked_piece = Object.assign({}, prevClicked_piece);
+    availableSquare = [...prevAvailableSquare];
+    return flag;
+}
+
+function getPieceFromImg(img) {
+    let piece = {};
+    piece.name = img.alt;
+    piece.div = img.parentElement;
+    piece.row = parseInt(img.parentElement.dataset.row);
+    piece.col = parseInt(img.parentElement.dataset.col);
+    return piece;
+}
+
+function checkForCheck() {
+    // let prevClicked_piece = { ...clicked_piece };
+    // let prevAvailableSquare = [...availableSquare];
+
+    // check = false;    // lets start by assuming there is no check
+    // let squaresDiv = document.querySelectorAll(`.square`);
+    // squaresDiv.forEach(div => {
+    //     if (div.hasChildNodes()) {
+    //         // simulate the click and check for available move if it has king or not
+    //         clickHandler(div.firstChild);
+    //         availableSquare.forEach(div => {
+    //             if (div.hasChildNodes()) {
+    //                 if (div.firstChild.alt.includes("king")) {
+    //                     check = true;
+    //                     return;
+    //                 }
+    //             }
+    //         });
+    //         unselectPiece();
+    //         hideAvailableSquare(); 
+    //     }
+    // });
+    // availableSquare = prevAvailableSquare;
+    // clicked_piece = Object.assign({}, prevClicked_piece);
 }
 
 function unselectPiece() {
